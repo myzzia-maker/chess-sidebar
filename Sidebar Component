@@ -1,0 +1,182 @@
+class CheckmateSidebar extends HTMLElement {
+    connectedCallback() {
+        this.innerHTML = `
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                :host {
+                    display: block;
+                }
+
+                .sidebar {
+                    width: 300px;
+                    background: white;
+                    border-radius: 12px;
+                    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+                    overflow: hidden;
+                    animation: slideIn 0.3s ease-out;
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                }
+
+                @keyframes slideIn {
+                    from {
+                        opacity: 0;
+                        transform: translateX(-20px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateX(0);
+                    }
+                }
+
+                .sidebar-header {
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    padding: 25px;
+                    text-align: center;
+                }
+
+                .sidebar-header h1 {
+                    font-size: 24px;
+                    margin-bottom: 5px;
+                }
+
+                .sidebar-header p {
+                    font-size: 13px;
+                    opacity: 0.9;
+                }
+
+                .sidebar-nav {
+                    padding: 20px;
+                }
+
+                .nav-item {
+                    display: flex;
+                    align-items: center;
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    text-decoration: none;
+                    color: #333;
+                    border-radius: 8px;
+                    transition: all 0.3s ease;
+                    border-left: 4px solid transparent;
+                    cursor: pointer;
+                }
+
+                .nav-item:hover {
+                    background: #f0f0f0;
+                    transform: translateX(5px);
+                    border-left-color: #667eea;
+                }
+
+                .nav-item.active {
+                    background: #e8eaf6;
+                    border-left-color: #667eea;
+                    color: #667eea;
+                    font-weight: 600;
+                }
+
+                .nav-icon {
+                    font-size: 20px;
+                    margin-right: 12px;
+                    width: 25px;
+                    text-align: center;
+                }
+
+                .nav-text {
+                    flex: 1;
+                    font-size: 14px;
+                }
+
+                .nav-badge {
+                    background: #ff6b6b;
+                    color: white;
+                    border-radius: 20px;
+                    padding: 2px 8px;
+                    font-size: 11px;
+                    font-weight: bold;
+                }
+
+                .sidebar-footer {
+                    padding: 15px 20px;
+                    border-top: 1px solid #eee;
+                    text-align: center;
+                    color: #999;
+                    font-size: 12px;
+                }
+            </style>
+
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h1>♟️ Checkmate Theory</h1>
+                    <p>Club Navigation</p>
+                </div>
+
+                <nav class="sidebar-nav">
+                    <a href="https://www.chess.com/clubs/events/checkmate-theory" class="nav-item" target="_blank">
+                        <span class="nav-icon">📅</span>
+                        <span class="nav-text">Events</span>
+                    </a>
+
+                    <a href="https://www.chess.com/leaderboard/daily?group=931375" class="nav-item" target="_blank">
+                        <span class="nav-icon">🏆</span>
+                        <span class="nav-text">Leaderboard</span>
+                    </a>
+
+                    <a href="https://www.chess.com/clubs/forum/checkmate-theory" class="nav-item" target="_blank">
+                        <span class="nav-icon">💬</span>
+                        <span class="nav-text">Forums</span>
+                    </a>
+
+                    <a href="https://www.chess.com/clubs/members/checkmate-theory" class="nav-item" target="_blank">
+                        <span class="nav-icon">👥</span>
+                        <span class="nav-text">Members</span>
+                    </a>
+
+                    <a href="https://www.chess.com/club/checkmate-theory/announcements" class="nav-item" target="_blank">
+                        <span class="nav-icon">📢</span>
+                        <span class="nav-text">Announcements</span>
+                        <span class="nav-badge">New</span>
+                    </a>
+                </nav>
+
+                <div class="sidebar-footer">
+                    <p>© 2026 Checkmate Theory Club</p>
+                </div>
+            </div>
+        `;
+
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        const navItems = this.querySelectorAll('.nav-item');
+        
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                if (item.tagName !== 'A') {
+                    e.preventDefault();
+                }
+                
+                navItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                localStorage.setItem('activeNav', item.textContent.trim());
+            });
+        });
+
+        const activeNav = localStorage.getItem('activeNav');
+        if (activeNav) {
+            navItems.forEach(item => {
+                if (item.textContent.trim() === activeNav) {
+                    item.classList.add('active');
+                }
+            });
+        }
+    }
+}
+
+customElements.define('checkmate-sidebar', CheckmateSidebar);
